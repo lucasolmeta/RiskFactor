@@ -11,7 +11,9 @@ class OddsEngine{
         double oddsToProb(const std::string& odds, OddsType type);
         std::vector<double> oddsToProb(const std::vector<std::string>& oddsVector);
         std::vector<double> oddsToProb(const std::vector<std::string>& oddsVector, OddsType type);
-        double vig(const std::vector<double>& probs);
+
+        double computeVig(const std::vector<double>& probs);
+        std::vector<double> removeVig(const std::vector<double>& probs);
 
         double computeEdge(double modelProb, double fairProb);
 

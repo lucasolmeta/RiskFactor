@@ -32,7 +32,7 @@ std::vector<double> OddsEngine::oddsToProb(const std::vector<std::string>& oddsV
     std::vector<double> probsVector;
 
     for(int i = 0; i < oddsVector.size(); i++){
-        OddsType type = inferOddsType ( oddsVector[i] );
+        OddsType type = inferOddsType( oddsVector[i] );
         double prob = oddsToProb( oddsVector[i], type );
 
         probsVector.push_back( prob );
@@ -55,14 +55,27 @@ std::vector<double> OddsEngine::oddsToProb(const std::vector<std::string>& oddsV
 
 // Compute Vig
 
-double OddsEngine::vig(const std::vector<double>& probs){
+double OddsEngine::computeVig(const std::vector<double>& probs){
     return std::accumulate(probs.begin(), probs.end(), 0.0) - 1.0;
+}
+
+// Remove Vig
+
+std::vector<double> OddsEngine::removeVig(const std::vector<double>& probs){
+    double vig = computeVig(probs);
+    std::vector<double> probsWithoutVig;
+
+    for(int i = 0; i < probs.size(); i++){
+        probsWithoutVig.push_back( probs[i] / ( 1 + vig ) );
+    }
+
+    return probsWithoutVig;
 }
 
 // Compute Edge
 
 double OddsEngine::computeEdge(double modelProb, double fairProb){
-    return 1.0;
+    return modelProb - fairProb;
 }
 
 // Compute Kelly
