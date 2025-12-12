@@ -90,7 +90,7 @@ std::vector<double> OddsEngine::computeEdge(const std::vector<double>& modelProb
 
 // Compute Kelly
 
-double OddsEngine::kelly(double modelProb, double fairProb, double impliedProb) {
+double OddsEngine::kelly(double modelProb, double fairProb, double impliedProb){
     if (modelProb <= fairProb){ 
         return 0.0;
     }
@@ -98,6 +98,18 @@ double OddsEngine::kelly(double modelProb, double fairProb, double impliedProb) 
     double payoutRatio = (1.0 / impliedProb) - 1.0;
     
     return (modelProb / impliedProb - 1) / payoutRatio;
+}
+
+std::vector<double> OddsEngine::kelly(std::vector<double> modelProbs, std::vector<double> fairProbs, std::vector<double> impliedProbs){
+    std::vector<double> kellyVals;
+
+    for(int i = 0; i < modelProbs.size(); i++){
+        double val = kelly( modelProbs[i], fairProbs[i], impliedProbs[i] );
+
+        kellyVals.push_back( val );
+    }
+
+    return kellyVals;
 }
 
 // Infer Odds Type

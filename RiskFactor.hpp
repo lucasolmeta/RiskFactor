@@ -19,6 +19,7 @@ class OddsEngine{
         std::vector<double> computeEdge(const std::vector<double>& modelProbs, const std::vector<double>& fairProbs);
 
         double kelly(double modelProb, double fairProb, double impliedProb);
+        std::vector<double> kelly(std::vector<double> modelProbs, std::vector<double> fairProbs, std::vector<double> impliedProbs);
 
     private:
         OddsType inferOddsType(const std::string& odds);
