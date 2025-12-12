@@ -16,6 +16,7 @@ class OddsEngine{
         std::vector<double> removeVig(const std::vector<double>& probs);
 
         double computeEdge(double modelProb, double fairProb);
+        std::vector<double> computeEdge(const std::vector<double>& modelProbs, const std::vector<double>& fairProbs);
 
         double kelly(double modelProb, double fairProb, double payout);
 

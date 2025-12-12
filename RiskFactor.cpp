@@ -78,6 +78,16 @@ double OddsEngine::computeEdge(double modelProb, double fairProb){
     return modelProb - fairProb;
 }
 
+std::vector<double> OddsEngine::computeEdge(const std::vector<double>& modelProbs, const std::vector<double>& fairProbs){
+    std::vector<double> edges;
+
+    for(int i = 0; i < modelProbs.size(); i++){
+        edges.push_back(modelProbs[i] - fairProbs[i]);
+    }
+
+    return edges;
+}
+
 // Compute Kelly
 
 double OddsEngine::kelly(double modelProb, double fairProb, double payout){
