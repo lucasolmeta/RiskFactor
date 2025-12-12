@@ -2,38 +2,38 @@
 
 #include <numeric>
 
-double OddsEngine::oddsToProb(const std::string& odds) {
+double OddsEngine::oddsToImpliedProb(const std::string& odds) {
     OddsType type = inferOddsType( odds );
 
     if (type == OddsType::American) {
-        return americanToProb( odds );
+        return americanToImpliedProb( odds );
     } else if (type == OddsType::Fractional) {
-        return fractionalToProb( odds );
+        return fractionalToImpliedProb( odds );
     } else if (type == OddsType::Decimal) {
-        return decimalToProb( odds );
+        return decimalToImpliedProb( odds );
     } else {
         return -1.0;
     }
 }
 
-double OddsEngine::oddsToProb(const std::string& odds, OddsType type) {
+double OddsEngine::oddsToImpliedProb(const std::string& odds, OddsType type) {
     if (type == OddsType::American) {
-        return americanToProb( odds );
+        return americanToImpliedProb( odds );
     } else if (type == OddsType::Fractional) {
-        return fractionalToProb( odds );
+        return fractionalToImpliedProb( odds );
     } else if (type == OddsType::Decimal) {
-        return decimalToProb( odds );
+        return decimalToImpliedProb( odds );
     } else{
         return -1.0;
     }
 }
 
-std::vector<double> OddsEngine::oddsToProb(const std::vector<std::string>& oddsVector) {
+std::vector<double> OddsEngine::oddsToImpliedProb(const std::vector<std::string>& oddsVector) {
     std::vector<double> probsVector;
 
     for(int i = 0; i < oddsVector.size(); i++){
         OddsType type = inferOddsType( oddsVector[i] );
-        double prob = oddsToProb( oddsVector[i], type );
+        double prob = oddsToImpliedProb( oddsVector[i], type );
 
         probsVector.push_back( prob );
     }
@@ -41,11 +41,11 @@ std::vector<double> OddsEngine::oddsToProb(const std::vector<std::string>& oddsV
     return probsVector;
 }
 
-std::vector<double> OddsEngine::oddsToProb(const std::vector<std::string>& oddsVector, OddsType type) {
+std::vector<double> OddsEngine::oddsToImpliedProb(const std::vector<std::string>& oddsVector, OddsType type) {
     std::vector<double> probsVector;
 
     for(int i = 0; i < oddsVector.size(); i++){
-        double prob = oddsToProb( oddsVector[i], type );
+        double prob = oddsToImpliedProb( oddsVector[i], type );
 
         probsVector.push_back( prob );
     }
@@ -55,18 +55,18 @@ std::vector<double> OddsEngine::oddsToProb(const std::vector<std::string>& oddsV
 
 // Compute Vig
 
-double OddsEngine::computeVig(const std::vector<double>& probs){
-    return std::accumulate(probs.begin(), probs.end(), 0.0) - 1.0;
+double OddsEngine::computeVig(const std::vector<double>& impliedProbs){
+    return std::accumulate(impliedProbs.begin(), impliedProbs.end(), 0.0) - 1.0;
 }
 
 // Remove Vig
 
-std::vector<double> OddsEngine::removeVig(const std::vector<double>& probs){
-    double vig = computeVig(probs);
+std::vector<double> OddsEngine::removeVig(const std::vector<double>& impliedProbs){
+    double vig = computeVig(impliedProbs);
     std::vector<double> probsWithoutVig;
 
-    for(int i = 0; i < probs.size(); i++){
-        probsWithoutVig.push_back( probs[i] / ( 1 + vig ) );
+    for(int i = 0; i < impliedProbs.size(); i++){
+        probsWithoutVig.push_back( impliedProbs[i] / ( 1 + vig ) );
     }
 
     return probsWithoutVig;
@@ -90,10 +90,16 @@ std::vector<double> OddsEngine::computeEdge(const std::vector<double>& modelProb
 
 // Compute Kelly
 
-double OddsEngine::kelly(double modelProb, double fairProb, double payout){
-    return 1.0;
-}
+double OddsEngine::kelly(double modelProb, double fairProb, double impliedProb) {
+    if (modelProb <= fairProb){ 
+        return 0.0;
+    }
+
+    double payoutRatio = (1.0 / impliedProb) - 1.0;
     
+    return (modelProb / impliedProb - 1) / payoutRatio;
+}
+
 // Infer Odds Type
 
 OddsType OddsEngine::inferOddsType(const std::string& odds){
@@ -108,7 +114,7 @@ OddsType OddsEngine::inferOddsType(const std::string& odds){
 
 // American Odds to Probability
 
-double OddsEngine::americanToProb(const std::string& odds){
+double OddsEngine::americanToImpliedProb(const std::string& odds){
     try{
         std::string sign = odds.substr(0,1);
         int num = std::stoi( odds.substr(1) );
@@ -127,12 +133,12 @@ double OddsEngine::americanToProb(const std::string& odds){
 
 // Fractional Odds to Probability
 
-double OddsEngine::fractionalToProb(const std::string& odds){
+double OddsEngine::fractionalToImpliedProb(const std::string& odds){
     return 1.0;
 }
 
 // Decimal Odds to Probability
 
-double OddsEngine::decimalToProb(const std::string& odds){
+double OddsEngine::decimalToImpliedProb(const std::string& odds){
     return 1.0;
 }
