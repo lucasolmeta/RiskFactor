@@ -23,10 +23,4 @@ int main(){
     for(int i = 0; i < probs.size(); i++){
         std::cout << probs[i] * 100.0 << "%'s fair prob counterpart is " << fairProbs[i] * 100.0 << "%" << std::endl;
     }
-
-    std::vector<double> edges = engine.computeEdge( probs, fairProbs );
-    
-    for(int i = 0; i < probs.size(); i++){
-        std::cout << "Edge for " << odds[i] << " is equal to " << edges[i] << std::endl;
-    }
 }
