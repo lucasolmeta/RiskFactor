@@ -1,4 +1,4 @@
-#include "OddsEngine.hpp"
+#include "RiskFactor.hpp"
 
 #include <numeric>
 
@@ -74,7 +74,7 @@ double OddsEngine::kelly(double modelProb, double fairProb, double payout){
 // Infer Odds Type
 
 OddsType OddsEngine::inferOddsType(const std::string& odds){
-    if ( odds.substr(0,1) == "-"  || odds.substr(0,1) == '+'){
+    if ( odds.substr(0,1) == "-"  || odds.substr(0,1) == "+"){
         return OddsType::American;
     } else if ( odds.find('/') != std::string::npos ){
         return OddsType::Fractional;
