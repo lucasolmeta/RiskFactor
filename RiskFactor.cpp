@@ -100,7 +100,7 @@ double OddsEngine::kelly(double modelProb, double fairProb, double impliedProb){
     return (modelProb / impliedProb - 1) / payoutRatio;
 }
 
-std::vector<double> OddsEngine::kelly(std::vector<double> modelProbs, std::vector<double> fairProbs, std::vector<double> impliedProbs){
+std::vector<double> OddsEngine::kelly(const std::vector<double>& modelProbs, const std::vector<double>& fairProbs, const std::vector<double>& impliedProbs){
     std::vector<double> kellyVals;
 
     for(int i = 0; i < modelProbs.size(); i++){
@@ -146,11 +146,25 @@ double OddsEngine::americanToImpliedProb(const std::string& odds){
 // Fractional Odds to Probability
 
 double OddsEngine::fractionalToImpliedProb(const std::string& odds){
-    return 1.0;
+    try{
+        size_t slash = odds.find('/');
+        int num = std::stoi( odds.substr(0, slash) );
+        int den = std::stoi( odds.substr(slash + 1) );
+
+        return den / ( num + den * 1.0 );
+    } catch (...){
+        return -1.0;
+    }
 }
 
 // Decimal Odds to Probability
 
 double OddsEngine::decimalToImpliedProb(const std::string& odds){
-    return 1.0;
+    try{
+        double num = std::stod( odds );
+
+        return 1.0 / num;
+    } catch (...){
+        return -1.0;
+    }
 }
